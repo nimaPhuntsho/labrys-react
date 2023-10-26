@@ -114,7 +114,7 @@ const Home = () => {
       success && (
         <Alert className="alert" status="success" variant="subtle">
           <AlertIcon />
-          Token added !!!
+          Token added !!! in v1.1
         </Alert>
       )
     );
