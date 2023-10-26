@@ -1,0 +1,10 @@
+.token-wrapper {
+  position: relative;
+  color: burlywood;
+}
+
+.alert {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
