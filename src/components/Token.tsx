@@ -25,12 +25,12 @@ const Token = ({
   };
 
   // Separate the price into a more readible format
-  function refactorPrice(price: number) {
+  function renderPrice(price: number) {
     return price.toLocaleString();
   }
 
   //add suffix to the market cap (Mn | Bn)
-  function addSuffix(cap: number) {
+  function renderMarketCap(cap: number) {
     if (cap >= 1e9) return (cap / 1e9).toFixed(2) + " Bn";
     else if (cap >= 1e6) {
       return (cap / 1e6).toFixed(2) + " Mn";
@@ -92,7 +92,7 @@ const Token = ({
             color="#707070"
             lineHeight="normal"
           >
-            {addSuffix(market_cap)}
+            {renderMarketCap(market_cap)}
           </Text>
         </Box>
         <Box position="absolute" w="80px" h="15px" top="21px" left="200px">
@@ -103,7 +103,7 @@ const Token = ({
             lineHeight="14.52px"
             align="right"
           >
-            ${refactorPrice(price)}
+            ${renderPrice(price)}
           </Text>
         </Box>
         <Box

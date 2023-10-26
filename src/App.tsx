@@ -1,8 +1,8 @@
 /* eslint-disable */
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MyTokens from "./MyTokens";
-import Home from "./Home";
+import MyTokens from "./components/MyTokens";
+import Home from "./components/Home";
 
 export interface FavouriteToken {
   id: number;
@@ -17,8 +17,8 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="" element={<Home />}></Route>
-          <Route path="mytokens" element={<MyTokens />}></Route>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/mytokens" element={<MyTokens />}></Route>
         </Routes>
       </BrowserRouter>
     </>

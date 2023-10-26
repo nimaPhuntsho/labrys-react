@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
-  AlertIcon,
   Box,
   Button,
   Heading,
@@ -9,21 +7,27 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
-import { FavouriteToken } from "./App";
+import { FavouriteToken } from "../App";
 import Token from "./Token";
 import { NavLink } from "react-router-dom";
 import { StarIcon } from "@chakra-ui/icons";
-import "./App.css";
 
 const Home = () => {
-  const favouriteTokenUrl = "http://localhost:5050/";
-  const [token, setToken] = useState<FavouriteToken[]>([]);
-  const [success, setSuccess] = useState(false);
+  // Create a toast notification
+  const toast = useToast();
 
+  // Define the API endpoint URL
+  const favouriteTokenUrl = "http://52.21.132.238:5050/";
+
+  // State to hold token data
+  const [token, setToken] = useState<FavouriteToken[]>([]);
+
+  // Fetch data from the API on component mount
   useEffect(() => {
     fetchData(`${favouriteTokenUrl}coinmarket`);
   }, []);
 
+  // Function to fetch data from the API
   async function fetchData(url: string) {
     try {
       const response = await fetch(url);
@@ -31,6 +35,7 @@ const Home = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const result = await response.json();
+      // Transform the API data into FavouriteToken objects
       const tokens: FavouriteToken[] = result.data.map((item: any) => ({
         id: item.id,
         symbol: item.symbol,
@@ -38,13 +43,13 @@ const Home = () => {
         percent_change_1h: item.quote.USD.percent_change_1h,
         market_cap: item.quote.USD.market_cap,
       }));
-
       setToken(tokens);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
 
+  // Function to handle adding a token to "My tokens"
   async function handleTokenClick(token: FavouriteToken) {
     const request = await fetch(`${favouriteTokenUrl}posts`, {
       method: "POST",
@@ -59,23 +64,32 @@ const Home = () => {
     } else {
       const response = await request.json();
       if (response) {
-        setSuccess(true);
+        // Show a success toast notification
+        toast({
+          title: "Token added",
+          description: "Token added to 'My tokens'",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
       }
     }
   }
 
+  // Function to render a loading skeleton if no tokens are available
   function skeleton() {
-    return token.length < 1 ? (
-      <Stack>
-        <Skeleton height="20px" />
-        <Skeleton height="20px" />
-        <Skeleton height="20px" />
-      </Stack>
-    ) : (
-      <h1></h1>
+    return (
+      token.length < 1 && (
+        <Stack>
+          <Skeleton height="20px" />
+          <Skeleton height="20px" />
+          <Skeleton height="20px" />
+        </Stack>
+      )
     );
   }
 
+  // Function to render the token components
   function renderTokens() {
     return token.map((favToken) => (
       <Token
@@ -92,48 +106,27 @@ const Home = () => {
     ));
   }
 
+  // Function to render navigation link
   const navigation = () => {
     return (
       <nav>
-        <ul>
-          <li>
-            <NavLink to="/mytokens">
-              {" "}
-              <Button colorScheme={"telegram"} leftIcon={<StarIcon />}>
-                My token
-              </Button>{" "}
-            </NavLink>
-          </li>
-        </ul>
+        <NavLink to="/mytokens">
+          <Button colorScheme={"telegram"} leftIcon={<StarIcon />}>
+            My token
+          </Button>
+        </NavLink>
       </nav>
-    );
-  };
-
-  const alert = () => {
-    return (
-      success && (
-        <Alert className="alert" status="success" variant="subtle">
-          <AlertIcon />
-          Token added !!! in v1.1
-        </Alert>
-      )
     );
   };
 
   return (
     <>
-      {navigation()}
-      <Box
-        position="relative"
-        display="flex"
-        justifyContent="center"
-        padding="3rem"
-      >
+      <Box position="relative" display="flex" justifyContent="center">
         <Box display="flex" flexDirection="column" gap="10px">
+          {navigation()} {/* Render the navigation link */}
           <Heading size="md">Labrys technical tasks</Heading>
-          {skeleton()}
-          {renderTokens()}
-          {alert()}
+          {skeleton()} {/* Render loading skeleton */}
+          {renderTokens()} {/* Render token components */}
         </Box>
       </Box>
     </>
